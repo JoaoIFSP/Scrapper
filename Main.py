@@ -9,10 +9,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-# Caminhos personalizados
-chrome_path = r"D:\Users\User\Desktop\chrome-win64\chrome-win64\chrome.exe"
-chromedriver_path = r"D:\Users\User\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
-csv_path = r"D:\Users\User\Desktop\Scrapper\data\Scrapper-db.csv"
+# Notebook
+# chrome_path = r"C:\Users\M032\Desktop\chrome-win64\chrome-win64\chrome.exe"
+# chromedriver_path = r"C:\Users\M032\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
+# csv_path = r"C:\Users\M032\Desktop\Scrapper\data\Scrapper-db.csv"
+
+# Pc da firma 
+# chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
+# chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
+# csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
+
+# Pc vô 
+# chrome_path = r"D:\Users\User\Desktop\chrome-win64\chrome-win64\chrome.exe"
+# chromedriver_path = r"D:\Users\User\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
+# csv_path = r"D:\Users\User\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
+
+# Caminhos atual
+chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
+chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
+csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
 
 # Configurar opções do Chrome
 options = webdriver.ChromeOptions()
@@ -30,7 +45,7 @@ driver.get("https://web.whatsapp.com")
 
 # Aguardar o usuário escanear o QR Code
 print("Escaneie o QR Code e pressione Enter...")
-time.sleep(30)
+time.sleep(40)
 
 try:
     # Esperar até que o título do grupo esteja disponível
