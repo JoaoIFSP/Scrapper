@@ -27,7 +27,7 @@ from selenium.common.exceptions import NoSuchElementException
 # Caminhos atual
 chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
 chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
-csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
+csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_virgens\Scrapper-db.csv"
 
 # Configurar opções do Chrome
 options = webdriver.ChromeOptions()
