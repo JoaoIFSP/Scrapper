@@ -12,6 +12,8 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
 chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
 csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
+#csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_virgens\Scrapper-db.csv"
+#csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_promos\Scrapper-db.csv"
 
 
 # O CÓDIGO NÃO SERÁ COMENTADO PQ MEU PÊNIS É MUITO GRANDE
@@ -32,88 +34,99 @@ driver.get("https://web.whatsapp.com")
 print("Escaneie o QR Code e pressione Enter...")
 time.sleep(40)
 
-try:
-    print("Aguardando a página carregar...")
-    WebDriverWait(driver, 15).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@dir='auto']"))
-    )
+while True:
 
-    nome_grupo = driver.find_element(By.XPATH, "//span[@dir='auto']").text.strip()
-    print(f"Nome do grupo capturado: {nome_grupo}")
+    try:
+        print("Aguardando a página carregar...")
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@dir='auto']"))
+        )
 
-    driver.find_element(By.XPATH, "//div[@title='Dados de perfil']").click()
-    print("Botão de 'Dados de perfil' clicado!")
+        nome_grupo = driver.find_element(By.XPATH, "//span[@dir='auto']").text.strip()
+        print(f"Nome do grupo capturado: {nome_grupo}")
 
-    time.sleep(2)
+        driver.find_element(By.XPATH, "//div[@title='Dados de perfil']").click()
+        print("Botão de 'Dados de perfil' clicado!")
 
-    driver.find_element(By.XPATH, "//div[contains(text(), 'Ver tudo')]").click()
-    print("Botão de 'Ver tudo' clicado!")
+        time.sleep(2)
 
-    time.sleep(3)
+        driver.find_element(By.XPATH, "//div[contains(text(), 'Ver tudo')]").click()
+        print("Botão de 'Ver tudo' clicado!")
 
-    modal_div = driver.find_element(By.XPATH, "//div[@data-animate-modal-body='true']")
+        time.sleep(3)
 
-    telefones = set()
-    telefone_regex = re.compile(r"[\d\+\(\)\-\s]+")
-    total_telefones = 0
-    tentativas_sem_novos_contatos = 0
-    max_tentativas = 20
+        modal_div = driver.find_element(By.XPATH, "//div[@data-animate-modal-body='true']")
 
-    while tentativas_sem_novos_contatos < max_tentativas:
-        try:
-            telefone_elements = modal_div.find_elements(By.XPATH, ".//span[@dir='auto' and contains(@class, '_ao3e')]")
-            
-            novos_encontrados = 0
-            for telefone in telefone_elements:
-                try:
-                    telefone_texto = telefone.text.strip()
+        telefones = set()
+        telefone_regex = re.compile(r"[\d\+\(\)\-\s]+")
+        total_telefones = 0
+        tentativas_sem_novos_contatos = 0
+        max_tentativas = 20
 
-                    if telefone_regex.fullmatch(telefone_texto) and telefone_texto not in telefones:
-                        telefones.add(telefone_texto)
-                        total_telefones += 1
-                        novos_encontrados += 1
-                        print(f"Número encontrado: {telefone_texto} (Total: {total_telefones})")
-                        novos_dados = pd.DataFrame({
-                            "Nome": [nome_grupo] * len(telefones),
-                            "Telefone-1": list(telefones),
-                            "Var": ["tosend"] * len(telefones)
-                        })
-
-                        try:
-                            df_existente = pd.read_csv(csv_path, encoding='utf-8-sig')
-                            df_final = pd.concat([df_existente, novos_dados]).drop_duplicates(subset=["Telefone-1"], keep="first")
-                        except FileNotFoundError:
-                            df_final = novos_dados  
-
-                        df_final.to_csv(csv_path, index=False, encoding='utf-8-sig')
+        while tentativas_sem_novos_contatos < max_tentativas:
+            try:
+                telefone_elements = modal_div.find_elements(By.XPATH, ".//span[@dir='auto' and contains(@class, '_ao3e')]")
                 
-                except StaleElementReferenceException:
+                novos_encontrados = 0
+                for telefone in telefone_elements:
+                    try:
+                        telefone_texto = telefone.text.strip()
 
-                    continue  
+                        if telefone_regex.fullmatch(telefone_texto) and telefone_texto not in telefones:
+                            telefones.add(telefone_texto)
+                            total_telefones += 1
+                            novos_encontrados += 1
+                            print(f"Número encontrado: {telefone_texto} (Total: {total_telefones})")
+                            novos_dados = pd.DataFrame({
+                                "Nome": [nome_grupo] * len(telefones),
+                                "Telefone-1": list(telefones),
+                                "Var": ["tosend"] * len(telefones)
+                            })
 
-            if novos_encontrados == 0:
-                tentativas_sem_novos_contatos += 1
-            else:
-                tentativas_sem_novos_contatos = 0
+                            try:
+                                df_existente = pd.read_csv(csv_path, encoding='utf-8-sig')
+                                df_final = pd.concat([df_existente, novos_dados]).drop_duplicates(subset=["Telefone-1"], keep="first")
+                            except FileNotFoundError:
+                                df_final = novos_dados  
 
-        except NoSuchElementException:
-            print("Elemento de telefone não encontrado, continuando...")
+                            df_final.to_csv(csv_path, index=False, encoding='utf-8-sig')
+                    
+                    except StaleElementReferenceException:
+
+                        continue  
+
+                if novos_encontrados == 0:
+                    tentativas_sem_novos_contatos += 1
+                else:
+                    tentativas_sem_novos_contatos = 0
+
+            except NoSuchElementException:
+                print("Elemento de telefone não encontrado, continuando...")
 
 
-        webdriver.ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
-        time.sleep(0.05)  
+            webdriver.ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
+            time.sleep(0.05)  
 
-    print("Fim da lista detectado!")
+        print("Fim da lista detectado!")
 
 
-    print(f"Dados salvos no banco de dados CSV: {csv_path}")
+        print(f"Dados salvos no banco de dados CSV: {csv_path}")
 
-except Exception as e:
-    print("Erro:", e)
+    except Exception as e:
+        print("Erro:", e)
 
-finally:
-    end_time = time.time()
-    print(f"Tempo total de execução: {end_time - start_time:.2f} segundos")
-    print(f"Total de {total_telefones} números encontrados e processados.")
-    driver.quit()
+    finally:
+        end_time = time.time()
+        print(f"Tempo total de execução: {end_time - start_time:.2f} segundos")
+        print(f"Total de {total_telefones} números encontrados e processados.")
+
+        cabo = input("Já acabou zé?")
+        if cabo == "0":
+            print("Vamos rodar dnv então")
+        else:
+            break
+
+print("ACABO")
+    
+driver.quit()
     # BUCETINHA GAMES BRASIL #
