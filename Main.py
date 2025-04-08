@@ -9,26 +9,26 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
-# Configurar caminhos (ajuste conforme necessário)
 chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
 chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
 csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
 
-# Configurar opções do Chrome
+
+# O CÓDIGO NÃO SERÁ COMENTADO PQ MEU PÊNIS É MUITO GRANDE
+# muito.
+
+
+
 options = webdriver.ChromeOptions()
 options.binary_location = chrome_path
 
-# Iniciar o driver com o caminho do ChromeDriver
 service = Service(chromedriver_path)
 driver = webdriver.Chrome(service=service, options=options)
 
-# Registrar o tempo de início
 start_time = time.time()
 
-# Abrir o WhatsApp Web
 driver.get("https://web.whatsapp.com")
 
-# Aguardar o usuário escanear o QR Code
 print("Escaneie o QR Code e pressione Enter...")
 time.sleep(40)
 
@@ -41,19 +41,16 @@ try:
     nome_grupo = driver.find_element(By.XPATH, "//span[@dir='auto']").text.strip()
     print(f"Nome do grupo capturado: {nome_grupo}")
 
-    # Abrir os dados de perfil
     driver.find_element(By.XPATH, "//div[@title='Dados de perfil']").click()
     print("Botão de 'Dados de perfil' clicado!")
 
     time.sleep(2)
 
-    # Clicar no botão "Ver tudo"
     driver.find_element(By.XPATH, "//div[contains(text(), 'Ver tudo')]").click()
     print("Botão de 'Ver tudo' clicado!")
 
     time.sleep(3)
 
-    # Localizar a modal de contatos
     modal_div = driver.find_element(By.XPATH, "//div[@data-animate-modal-body='true']")
 
     telefones = set()
@@ -91,7 +88,7 @@ try:
                         df_final.to_csv(csv_path, index=False, encoding='utf-8-sig')
                 
                 except StaleElementReferenceException:
-                    # Se o elemento foi atualizado na página, ignoramos e continuamos
+
                     continue  
 
             if novos_encontrados == 0:
@@ -102,13 +99,12 @@ try:
         except NoSuchElementException:
             print("Elemento de telefone não encontrado, continuando...")
 
-        # Pressionar seta para baixo globalmente
+
         webdriver.ActionChains(driver).send_keys(Keys.ARROW_DOWN).perform()
         time.sleep(0.05)  
 
     print("Fim da lista detectado!")
 
-    # Criar DataFrame e salvar os dados
 
     print(f"Dados salvos no banco de dados CSV: {csv_path}")
 
