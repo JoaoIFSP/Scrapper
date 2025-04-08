@@ -2,8 +2,8 @@ import pandas as pd
 import re
 
 # eu tenho fimmoze
-arquivo_entrada = r"C:\Users\GEMTI\Desktop\Scrapper\data_virgens\Scrapper-db.csv"
-arquivo_saida = r"C:\Users\GEMTI\Desktop\Scrapper\data_virgens\Clear_data\Scrapper-db-limpo.csv"
+arquivo_entrada = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
+arquivo_saida = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Clear_data\Scrapper-db-limpo.csv"
 
 def limpar_numeros(telefone, contador_duplicatas):
     if pd.notna(telefone):
