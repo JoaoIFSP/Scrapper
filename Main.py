@@ -27,7 +27,7 @@ from selenium.common.exceptions import NoSuchElementException
 # Caminhos atual
 chrome_path = r"C:\Users\GEMTI\Desktop\chrome-win64\chrome-win64\chrome.exe"
 chromedriver_path = r"C:\Users\GEMTI\Desktop\chromedriver-win64\chromedriver-win64\chromedriver.exe"
-csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_virgens\Scrapper-db.csv"
+csv_path = r"C:\Users\GEMTI\Desktop\Scrapper\data_pechinchou\Scrapper-db.csv"
 
 # Configurar opções do Chrome
 options = webdriver.ChromeOptions()
@@ -103,6 +103,27 @@ try:
                         total_telefones += 1  # Atualiza o contador
                         novos_encontrados += 1
                         print(f"Número encontrado: {telefone_texto} (Total: {total_telefones})")
+                        novos_dados = pd.DataFrame({
+                            "Nome": [nome_grupo] * len(telefones),
+                            "Telefone-1": list(telefones),
+                            "Var": ["tosend"] * len(telefones)
+                        })
+
+                        # Verificar se o arquivo CSV já existe
+                        try:
+                            df_existente = pd.read_csv(csv_path, encoding='utf-8-sig')
+
+                            # Contar quantos números já existem no banco antes da remoção de duplicatas
+                            duplicados = df_existente["Telefone-1"].isin(novos_dados["Telefone-1"]).sum()
+
+                            # Concatenar os novos dados com os existentes e remover duplicatas
+                            df_final = pd.concat([df_existente, novos_dados]).drop_duplicates(subset=["Telefone-1"], keep="first")
+                        except FileNotFoundError:
+                            df_final = novos_dados  # Se o arquivo não existir, apenas salvar os novos dados
+                            duplicados = 0  # Nenhum duplicado se não há arquivo existente
+
+                        # Salvar o DataFrame atualizado no CSV
+                        df_final.to_csv(csv_path, index=False, encoding='utf-8-sig')
                 
                 # Se não encontrou nenhum novo número, aumenta o contador de tentativas sem novos contatos
                 if novos_encontrados == 0:
